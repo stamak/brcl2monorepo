@@ -17,20 +17,20 @@
         "build": {
           "builder": "@bazel/angular:build",
           "options": {
-            "targetLabel": "//src:prodapp",
+            "targetLabel": "//angular/src:prodapp",
             "bazelCommand": "build"
           }
         },
         "serve": {
           "builder": "@bazel/angular:build",
           "options": {
-            "targetLabel": "//src:devserver",
+            "targetLabel": "//angular/src:devserver",
             "bazelCommand": "run",
             "watch": true
           },
           "configurations": {
             "production": {
-              "targetLabel": "//src:prodserver"
+              "targetLabel": "//angular/src:prodserver"
             }
           }
         },
@@ -44,15 +44,15 @@
           "builder": "@bazel/angular:build",
           "options": {
             "bazelCommand": "test",
-            "targetLabel": "//src/app/..."
+            "targetLabel": "//angular/src/app/..."
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.json",
-              "src/tsconfig-test.json"
+              "angular/src/tsconfig.json",
+              "angular/src/tsconfig-test.json"
             ],
             "exclude": [
               "**/node_modules/**"

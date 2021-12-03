@@ -19,8 +19,8 @@ ng_ts_project(
         ":todos-styles",
     ],
     deps = [
-        "//src/app/todos/reducers",
-        "//src/shared/material",
+        "//angular/src/app/todos/reducers",
+        "//angular/src/shared/material",
         "@npm//@angular/common",
         "@npm//@angular/core",
         "@npm//@angular/forms",

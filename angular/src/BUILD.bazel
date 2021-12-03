@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web")
+load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web") 
 load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@io_bazel_rules_docker//nodejs:image.bzl", "nodejs_image")
 load("@io_bazel_rules_sass//:defs.bzl", "sass_binary")
@@ -50,12 +50,13 @@ ng_ts_project(
         "main.prod.ts",
     ],
     deps = [
-        "//src/app",
+        "//angular/src/app",
         "@npm//@angular/core",
         "@npm//@angular/platform-browser",
         "@npm//@angular/router",
         "@npm//@ngrx/store",
     ],
+    visibility = [":__subpackages__"],
 )
 
 # Files that we serve in both development and production
@@ -63,7 +64,7 @@ _ASSETS = [
     # This label references an output of the "styles" sass_binary above.
     ":styles.css",
     ":manifest.webmanifest",
-    "//:favicon.ico",
+    "//angular:favicon.ico",
 
     # Directly reference a file that came from @angular/material npm package
     "@npm//:node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
@@ -85,7 +86,7 @@ rollup_bundle(
     },
     output_dir = True,
     deps = [
-        "//src",
+        "//angular/src",
         "@npm//@rollup/plugin-commonjs",
         "@npm//@rollup/plugin-node-resolve",
     ],
@@ -113,7 +114,7 @@ html_insert_assets(
     name = "inject_scripts_for_dev",
     outs = ["index.html"],
     args = [
-        "--html=$(execpath //src:example/index.html)",
+        "--html=$(execpath //angular/src:example/index.html)",
         "--out=$@",
         "--roots=. $(RULEDIR)",
         "--assets",
@@ -121,7 +122,7 @@ html_insert_assets(
         "--scripts --module $(execpath :bundle-es2015)/index.dev.js",
     ],
     data = [
-        "//src:example/index.html",
+        "//angular/src:example/index.html",
         ":bundle-es2015",
     ] + _ASSETS,
 )
@@ -131,7 +132,7 @@ pkg_web(
     srcs = _ASSETS + [
         ":bundle-es2015",
         ":inject_scripts_for_dev",
-        "//src/assets",
+        "//angular/src/assets",
         # Include polyfills that will be requested by old browsers
         "@npm//:node_modules/systemjs/dist/system.js",
         "@npm//:node_modules/core-js/client/core.min.js",
@@ -168,7 +169,7 @@ html_insert_assets(
     # `example/index.html` in the web package.
     outs = ["_prodapp/src/index.html"],
     args = [
-        "--html=$(execpath //src:example/index.html)",
+        "--html=$(execpath //angular/src:example/index.html)",
         "--out=$@",
         "--roots=. $(RULEDIR)",
         "--assets",
@@ -177,7 +178,7 @@ html_insert_assets(
         "--scripts --nomodule $(execpath :bundle-es5.min)/index.prod.js",
     ],
     data = [
-        "//src:example/index.html",
+        "//angular/src:example/index.html",
         ":bundle-es2015.min",
         ":bundle-es5.min",
     ] + _ASSETS,
@@ -190,7 +191,7 @@ pkg_web(
         ":bundle-es5.min",
         # each injected index file should be listed here
         ":inject_scripts_for_prod",
-        "//src/assets",
+        "//angular/src/assets",
         ":robots.txt",
         # Service worker
         "@npm//:node_modules/@angular/service-worker/ngsw-worker.js",
@@ -211,7 +212,7 @@ ngsw_config(
     name = "pwa",
     src = ":prodapp",
     out = "pwa-config",
-    config = "//src:ngsw-config.json",
+    config = "//angular/src:ngsw-config.json",
 )
 
 history_server(
